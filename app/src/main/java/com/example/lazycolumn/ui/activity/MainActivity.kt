@@ -4,7 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.example.lazycolumn.ui.screen.MainScreen
+import com.example.lazycolumn.ui.App
+import com.example.lazycolumn.ui.screen.main.MainScreen
 import com.example.lazycolumn.ui.theme.LazyColumnTheme
 
 class MainActivity : ComponentActivity() {
@@ -13,8 +14,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             LazyColumnTheme {
-
-                MainScreen()
+                App()
             }
         }
     }
