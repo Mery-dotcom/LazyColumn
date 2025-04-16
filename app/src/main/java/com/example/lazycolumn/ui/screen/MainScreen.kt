@@ -83,12 +83,12 @@ fun BookItem(model: BookModel) {
             fontWeight = FontWeight.Bold
         )
         Text(
-            text = model.data,
+            text = model.author,
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold
         )
         Text(
-            text = model.page.toString(),
+            text = model.content,
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold
         )
