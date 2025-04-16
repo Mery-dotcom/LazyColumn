@@ -21,10 +21,13 @@ fun App() {
     }
 
     when (val navigation = currentNavigation) {
-        is Navigation.Main -> MainScreen { selectBook ->
-            val index = bookItem.indexOf(selectBook)
-            currentNavigation = Navigation.Detail(index)
-        }
+        is Navigation.Main -> MainScreen(
+            books = bookItem,
+            nClickItem = { selectBook ->
+                val index = bookItem.indexOf(selectBook)
+                currentNavigation = Navigation.Detail(index)
+            }
+        )
 
         is Navigation.Detail -> {
             val model = bookItem[navigation.data]

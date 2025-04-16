@@ -11,14 +11,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,16 +36,26 @@ import com.example.lazycolumn.ui.model.BookModel
 import com.example.lazycolumn.ui.model.navigation.Navigation
 
 @Composable
-fun MainScreen(nClickItem: (BookModel) -> Unit) {
+fun MainScreen(books: List<BookModel>, nClickItem: (BookModel) -> Unit) {
 
     val dataList = remember { mutableStateOf(BookModel.getData()) }
+    val category = remember { books.map { it.category }.distinct() }
+
+    var selectedCategory by remember { mutableStateOf("All") }
+    var searchQuery by remember { mutableStateOf("") }
+
+    val filteredList = books
+        .filter { selectedCategory == "All" || it.category == selectedCategory }
+        .filter {
+            it.name.contains(searchQuery, ignoreCase = true) ||
+                    it.author.contains(searchQuery, ignoreCase = true)
+        }
 
     Scaffold { padding ->
         Column(
-            modifier = Modifier.Companion
+            modifier = Modifier
                 .fillMaxSize()
                 .padding(padding),
-            horizontalAlignment = Alignment.Companion.CenterHorizontally
         ) {
             Text(
                 text = "Main Screen",
@@ -49,17 +63,45 @@ fun MainScreen(nClickItem: (BookModel) -> Unit) {
                 fontWeight = FontWeight.Companion.W900
             )
         }
-
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize(),
             contentPadding = PaddingValues(vertical = 16.dp, horizontal = 16.dp)
         ) {
-            items(dataList.value) {
+            items(filteredList) {
                 BookItem(it, onClickItem = { model ->
                     nClickItem(it)
                 })
                 Spacer(modifier = Modifier.size(12.dp))
+            }
+        }
+
+        TextField(
+            value = searchQuery,
+            onValueChange = { searchQuery = it },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            placeholder = { Text(text = "Search") }
+        )
+
+        Spacer(modifier = Modifier.size(8.dp))
+
+        LazyRow(
+            modifier = Modifier
+                .fillMaxWidth(),
+            contentPadding = PaddingValues(vertical = 16.dp)
+        ) {
+            items(listOf("All") + category) { category ->
+                Button(
+                    onClick = {
+                        selectedCategory = category
+                    },
+                    modifier = Modifier.padding(end = 8.dp),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text(text = category)
+                }
             }
         }
     }
@@ -94,15 +136,4 @@ fun BookItem(model: BookModel, onClickItem: (BookModel) -> Unit) {
             fontWeight = FontWeight.Bold
         )
     }
-}
-
-@Preview(
-    device = Devices.PIXEL_2_XL,
-    showBackground = true,
-    showSystemUi = true
-)
-
-@Composable
-fun MainScreen_Preview() {
-    MainScreen{}
 }
