@@ -38,7 +38,6 @@ import com.example.lazycolumn.ui.model.navigation.Navigation
 @Composable
 fun MainScreen(books: List<BookModel>, nClickItem: (BookModel) -> Unit) {
 
-    val dataList = remember { mutableStateOf(BookModel.getData()) }
     val category = remember { books.map { it.category }.distinct() }
 
     var selectedCategory by remember { mutableStateOf("All") }
@@ -53,9 +52,10 @@ fun MainScreen(books: List<BookModel>, nClickItem: (BookModel) -> Unit) {
 
     Scaffold { padding ->
         Column(
-            modifier = Modifier
+            modifier = Modifier.Companion
                 .fillMaxSize()
                 .padding(padding),
+            horizontalAlignment = Alignment.Companion.CenterHorizontally
         ) {
             Text(
                 text = "Main Screen",
@@ -63,10 +63,11 @@ fun MainScreen(books: List<BookModel>, nClickItem: (BookModel) -> Unit) {
                 fontWeight = FontWeight.Companion.W900
             )
         }
+
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize(),
-            contentPadding = PaddingValues(vertical = 16.dp, horizontal = 16.dp)
+            contentPadding = PaddingValues(vertical = 160.dp, horizontal = 16.dp)
         ) {
             items(filteredList) {
                 BookItem(it, onClickItem = { model ->
@@ -75,22 +76,10 @@ fun MainScreen(books: List<BookModel>, nClickItem: (BookModel) -> Unit) {
                 Spacer(modifier = Modifier.size(12.dp))
             }
         }
-
-        TextField(
-            value = searchQuery,
-            onValueChange = { searchQuery = it },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            placeholder = { Text(text = "Search") }
-        )
-
-        Spacer(modifier = Modifier.size(8.dp))
-
         LazyRow(
             modifier = Modifier
                 .fillMaxWidth(),
-            contentPadding = PaddingValues(vertical = 16.dp)
+            contentPadding = PaddingValues(vertical = 105.dp, horizontal = 16.dp)
         ) {
             items(listOf("All") + category) { category ->
                 Button(
@@ -104,6 +93,17 @@ fun MainScreen(books: List<BookModel>, nClickItem: (BookModel) -> Unit) {
                 }
             }
         }
+        TextField(
+            value = searchQuery,
+            onValueChange = { searchQuery = it },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 50.dp),
+            placeholder = { Text(text = "Search") }
+        )
+
+
+
     }
 }
 
@@ -118,7 +118,7 @@ fun BookItem(model: BookModel, onClickItem: (BookModel) -> Unit) {
             .clickable {
                 onClickItem(model)
             }
-            .padding(horizontal = 16.dp, vertical = 6.dp)
+            .padding(horizontal = 20.dp, vertical = 6.dp)
     ) {
         Text(
             text = model.name,
